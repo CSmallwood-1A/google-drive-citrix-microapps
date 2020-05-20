@@ -113,9 +113,21 @@ def reveive_notification():
     # we subscribed to by checking the channel ID of the notification
 
     headers = request.headers
-    resourceId = headers['X-Goog-Resource-ID']
+    url = headers['X-Goog-Resource-URI']
+
+    # get the name of the file
+    response = requests.get(
+        url=url,
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + flow.credentials.token
+        }
+    )
+    jsonData = response.json()
+    print(json.dumps(jsonData))
+
     data = {
-        "resourceId": resourceId
+        "filename": jsonData["name"]
     }
     requests.post(
         url="https://microapps-brewery-argus.azurewebsites.net/api/webhook-listener/e5d78690-a99b-4c3c-92e9-7fed6feb0032/28410bc3-2bdb-484f-9cb6-952dc093e6dc",
